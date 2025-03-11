@@ -1,11 +1,14 @@
 import CustomButton from "@/components/common/Button";
+import CenteredLayout from "@/components/layout/CenteredLayout";
 
 export default function Home() {
   return (
     <div>
-      <CustomButton onClick={() => alert("Botão clicado!")}>
-        Clique aqui
-      </CustomButton>
+      <CenteredLayout title="Escolha o seu presente! 🎁">
+        <CustomButton onClick={() => alert("Botão clicado!")}>
+          Clique aqui
+        </CustomButton>
+      </CenteredLayout>
     </div>
   );
 }
