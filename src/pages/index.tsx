@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div>
       <CenteredLayout title="Escolha o seu presente! 🎁">
-        <CustomButton onClick={() => alert("Botão clicado!")}>
+        <CustomButton onClick={() => alert("Botão clicado!")} variant="secondary">
           Clique aqui
         </CustomButton>
       </CenteredLayout>

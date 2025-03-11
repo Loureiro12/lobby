@@ -21,7 +21,7 @@ const CenteredLayout = ({ title, children }: CenteredLayoutProps) => {
       <Box
         sx={{
           backgroundColor: "white",
-          borderRadius: 2,
+          borderRadius: '20px',
           padding: 3,
           maxWidth: "1000px",
           width: "100%",
