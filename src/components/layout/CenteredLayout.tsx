@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
+import CopyrightIcon from "@mui/icons-material/Copyright";
 
 interface CenteredLayoutProps {
   title?: string;
@@ -21,7 +22,7 @@ const CenteredLayout = ({ title, children }: CenteredLayoutProps) => {
       <Box
         sx={{
           backgroundColor: "white",
-          borderRadius: '20px',
+          borderRadius: "20px",
           padding: 3,
           maxWidth: "1000px",
           width: "100%",
@@ -57,13 +58,48 @@ const CenteredLayout = ({ title, children }: CenteredLayoutProps) => {
 
         <Typography
           variant="body1"
+          component="div"
           sx={{
             fontSize: "14px",
             color: "#353535",
             textAlign: "center",
+            justifyContent: "center",
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          2025 - Empresa X em parceria com a Lobby
+          <CopyrightIcon
+            sx={{
+              fontSize: "16px",
+              marginRight: "5px",
+            }}
+          />
+          2025 -{" "}
+          <Typography
+            component="span"
+            sx={{
+              fontSize: "14px",
+              color: "#353535",
+              fontWeight: "bold",
+              marginLeft: "5px",
+              marginRight: "5px",
+            }}
+          >
+            Empresa X
+          </Typography>
+          em parceria com a
+          <Typography
+            component="span"
+            sx={{
+              fontSize: "14px",
+              color: "#353535",
+              fontWeight: "bold",
+              marginLeft: "5px",
+              marginRight: "5px",
+            }}
+          >
+            Lobby
+          </Typography>
         </Typography>
       </Box>
     </Box>
