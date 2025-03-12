@@ -50,7 +50,6 @@ export default function ChooseGiftPage() {
             display: "flex",
             justifyContent: "space-between",
             width: "100%",
-            // marginTop: "24px",
             marginBottom: "24px",
 
           }}
@@ -59,7 +58,7 @@ export default function ChooseGiftPage() {
             <Button variant="secondary">Voltar</Button>
           </Link>
 
-          <Link href="/redemption-data" passHref>
+          <Link href="/success" passHref>
             <Button variant="primary">
               Continuar
             </Button>

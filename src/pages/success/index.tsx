@@ -1,10 +1,8 @@
 import React from "react";
 import { Typography, Box } from "@mui/material";
-import Link from "next/link";
 import CenteredLayout from "@/components/layout/CenteredLayout";
-import Button from "@/components/common/Button";
 
-export default function WelcomePage() {
+export default function SuccessPage() {
   return (
     <CenteredLayout>
       <Box
@@ -36,7 +34,7 @@ export default function WelcomePage() {
             fontWeight: "bold",
           }}
         >
-          Bem-vindo!
+          Presente resgatado! 🎉🥳
         </Typography>
 
         <Typography
@@ -46,7 +44,7 @@ export default function WelcomePage() {
             color: "#353535",
           }}
         >
-          Estamos muito felizes em ter você em nossa equipe!
+          Seu pedido está em andamento!
         </Typography>
         <Typography
           variant="h6"
@@ -55,14 +53,9 @@ export default function WelcomePage() {
             color: "#353535",
           }}
         >
-          Preencha as perguntinhas a seguir para escolher o seu presente! 🎁
+          E não se preocupe, as alterações de status do envio chegam todas em
+          seu e-mail!
         </Typography>
-
-        <Box mt={4}>
-          <Link href="/choose-gift" passHref>
-            <Button>Começar!</Button>
-          </Link>
-        </Box>
       </Box>
     </CenteredLayout>
   );
