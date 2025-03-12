@@ -40,6 +40,7 @@ const CenteredLayout = ({ title, children }: CenteredLayoutProps) => {
               color: "#353535",
               textAlign: "center",
               fontWeight: "bold",
+              marginBottom: "24px",
             }}
           >
             {title}

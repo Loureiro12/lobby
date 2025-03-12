@@ -58,7 +58,7 @@ export default function ChooseGiftPage() {
             <Button variant="secondary">Voltar</Button>
           </Link>
 
-          <Link href="/success" passHref>
+          <Link href="/redemption-data" passHref>
             <Button variant="primary">
               Continuar
             </Button>
