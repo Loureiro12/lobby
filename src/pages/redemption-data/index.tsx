@@ -13,28 +13,19 @@ import Link from "next/link";
 import CenteredLayout from "@/components/layout/CenteredLayout";
 import Button from "@/components/common/Button";
 import { useAppContext } from "@/context/AppContext";
+import { useRouter } from "next/router";
+import { SnackbarAlert } from "@/components/features/redemption/SnackbarAlert";
+import { RecipientDataForm } from "@/components/features/redemption/RecipientDataForm";
+import { SizeForm } from "@/components/features/redemption/SizeForm";
+import { FormData } from "@/types/types";
+import { redeemProduct } from "@/services/send-ransom";
 
 export default function RedemptionDataPage() {
   const { products, selectedItems } = useAppContext();
-  const [formData, setFormData] = useState<{
-    fullName: string;
-    cpfCnpj: string;
-    email: string;
-    zipCode: string;
-    street: string;
-    number: string;
-    complement: string;
-    neighborhood: string;
-    city: string;
-    state: string;
-    country: string;
-    shirtSize: string;
-    hobby: string;
-    commercialTeam: string;
-    birthday: string;
-    iceCreamFlavors: string[];
-    [key: `question_${string}`]: string;
-  }>({
+  const router = useRouter();
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [formData, setFormData] = useState<FormData>({
     fullName: "",
     cpfCnpj: "",
     email: "",
@@ -54,8 +45,9 @@ export default function RedemptionDataPage() {
   });
 
   const hasSizes = products.some((product) => {
-    const items = product.items.filter((item) =>
-      selectedItems.includes(item.customer_product_id) || !item.optional
+    const items = product.items.filter(
+      (item) =>
+        selectedItems.includes(item.customer_product_id) || !item.optional
     );
     return items.some((item) => item.sizes && item.sizes.length > 0);
   });
@@ -74,24 +66,35 @@ export default function RedemptionDataPage() {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch("/api/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await redeemProduct(
+        products[0].id,
+        formData,
+        products,
+        selectedItems
+      );
+
       if (response.ok) {
-        console.log("Dados enviados com sucesso!");
+        router.push("/success");
       } else {
-        console.error("Erro ao enviar dados.");
+        setSnackbarOpen(true);
       }
     } catch (error) {
+      setSnackbarOpen(true);
       console.error("Erro ao enviar dados:", error);
     }
   };
 
-  const renderQuestionInput = (question: { id: string; answer_type: string; question: string; position?: number; options: string[]; }) => {
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
+  const renderQuestionInput = (question: {
+    id: string;
+    answer_type: string;
+    question: string;
+    position?: number;
+    options: string[];
+  }) => {
     switch (question.answer_type) {
       case "text":
         return (
@@ -111,7 +114,12 @@ export default function RedemptionDataPage() {
             aria-label={question.question}
             minRows={3}
             placeholder={question.question}
-            style={{ width: "100%", marginTop: "16px", padding: "8px" }}
+            style={{
+              width: "100%",
+              marginTop: "16px",
+              padding: "8px",
+              backgroundColor: "#fff",
+            }}
             name={`question_${question.id}`}
             value={formData[`question_${question.id}`] || ""}
             onChange={handleChange}
@@ -171,50 +179,8 @@ export default function RedemptionDataPage() {
           flex: 1,
         }}
       >
-        {/* Seção de Dados do Destinatário */}
-        <Box>
-          <Typography
-            variant="h6"
-            gutterBottom
-            sx={{ fontWeight: "bold", color: "#353535" }}
-          >
-            Dados do Destinatário
-          </Typography>
-          <TextField
-            label="Nome completo"
-            variant="standard"
-            fullWidth
-            margin="normal"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            required
-          />
-          <Box display="flex" gap={2}>
-            <TextField
-              label="CPF ou CNPJ"
-              variant="standard"
-              fullWidth
-              margin="normal"
-              name="cpfCnpj"
-              value={formData.cpfCnpj}
-              onChange={handleChange}
-              required
-            />
-            <TextField
-              label="E-mail"
-              variant="standard"
-              fullWidth
-              margin="normal"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </Box>
-        </Box>
+        <RecipientDataForm formData={formData} handleChange={handleChange} />
 
-        {/* Seção de Endereço de Entrega */}
         <Box>
           <Typography
             variant="h6"
@@ -328,35 +294,7 @@ export default function RedemptionDataPage() {
         </Box>
 
         {hasSizes && (
-          <Box>
-            <Typography
-              variant="h6"
-              gutterBottom
-              sx={{ fontWeight: "bold", color: "#353535" }}
-            >
-              Tamanhos
-            </Typography>
-            <FormControl variant="standard" fullWidth sx={{ marginTop: "16px" }}>
-              <InputLabel id="size-label">
-                Qual o seu tamanho (Camisetas)?
-              </InputLabel>
-              <Select
-                labelId="size-label"
-                id="size-select"
-                name="shirtSize"
-                value={formData.shirtSize}
-                onChange={handleChange}
-                label="Tamanho"
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value="P">P</MenuItem>
-                <MenuItem value="M">M</MenuItem>
-                <MenuItem value="G">G</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
+          <SizeForm formData={formData} handleChange={handleChange} />
         )}
 
         {hasExtraQuestions && (
@@ -371,7 +309,10 @@ export default function RedemptionDataPage() {
             {products.map((product) =>
               product.extra_questions?.map((question) => (
                 <Box key={question.id} marginBottom={2}>
-                  {renderQuestionInput({ ...question, id: question.id.toString() })}
+                  {renderQuestionInput({
+                    ...question,
+                    id: question.id.toString(),
+                  })}
                 </Box>
               ))
             )}
@@ -393,6 +334,11 @@ export default function RedemptionDataPage() {
           </Button>
         </Box>
       </Box>
+      <SnackbarAlert
+        open={snackbarOpen}
+        onClose={handleCloseSnackbar}
+        message="Ocorreu um erro ao enviar os dados. Tente novamente mais tarde."
+      />
     </CenteredLayout>
   );
 }

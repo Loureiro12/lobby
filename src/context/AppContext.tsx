@@ -1,33 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { fetchProducts } from "@/services/api";
+import { fetchProducts } from "@/services/fetch-products";
 import { ReactNode } from "react";
+import { Product } from "@/types/types";
 
-interface Product {
-  id: string;
-  status: string;
-  title: string;
-  welcome_title: string;
-  welcome_phrase: string;
-  logo_url: string;
-  background_color: string;
-  button_color: string;
-  items: Array<{
-    customer_product_id: string;
-    name: string;
-    quantity: number;
-    optional: boolean;
-    image_url: string;
-    sizes_grid: { name: string } | null;
-    sizes: Array<{ id: string; name: string }>;
-  }>;
-  extra_questions: Array<{
-    id: number;
-    answer_type: string;
-    question: string;
-    position: number;
-    options: string[];
-  }>;
-}
+
 
 interface AppContextType {
   products: Product[];

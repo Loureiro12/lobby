@@ -6,8 +6,7 @@ export const fetchProducts = async () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization:
-            "Basic YV9nNUFxWGJoUXlTUjUwd2tYTVF5Y21uVWItcFE3ODNkTFMxRjd5TjZnWTo='",
+          Authorization: `Basic ${process.env.NEXT_PUBLIC_API_TOKEN}`,
         },
       }
     );
