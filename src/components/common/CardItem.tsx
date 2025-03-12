@@ -26,14 +26,16 @@ const CardItem = ({
   return (
     <Card
       sx={{
-        width: "292px",
+        minWidth: "292px",
         height: "334px",
         display: "flex",
         flexDirection: "column",
         borderRadius: "6px",
         position: "relative",
         overflow: "hidden",
+        cursor: "pointer", // Altera o cursor para pointer
       }}
+      onClick={onSelect} // Ativa o checkbox ao clicar em qualquer lugar do card
     >
       <CardContent
         sx={{
@@ -45,6 +47,7 @@ const CardItem = ({
           padding: 2,
         }}
       >
+        {/* Checkbox no canto superior direito */}
         <Box
           sx={{
             position: "absolute",
@@ -84,6 +87,8 @@ const CardItem = ({
             }}
           />
         </Box>
+
+        {/* Imagem do produto */}
         <Box
           component="img"
           src={image}
@@ -96,6 +101,7 @@ const CardItem = ({
         />
       </CardContent>
 
+      {/* Nome do produto no rodapé */}
       <CardActions
         sx={{
           justifyContent: "center",
