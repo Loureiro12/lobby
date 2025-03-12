@@ -211,7 +211,7 @@ export default function RedemptionDataPage() {
               required
             />
           </Box>
-          <Box display="flex" gap={2}>
+          <Box display={["block", "flex"]} gap={2}>
             <TextField
               label="Número"
               variant="standard"
@@ -241,7 +241,7 @@ export default function RedemptionDataPage() {
               onChange={handleChange}
             />
           </Box>
-          <Box display="flex" gap={2} alignItems="center" marginTop={2}>
+          <Box display={["block", "flex"]} gap={2} alignItems="center" marginTop={2}>
             <TextField
               label="Cidade"
               variant="standard"

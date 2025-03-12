@@ -2,8 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { fetchProducts } from "@/services/fetch-products";
 import { ReactNode } from "react";
 import { Product } from "@/types/types";
-
-
+import { useRouter } from "next/router";
 
 interface AppContextType {
   products: Product[];
@@ -32,6 +31,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     const loadData = async () => {
@@ -44,13 +44,14 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         } else {
           setError(String(err));
         }
+        router.push("/error");
       } finally {
         setLoading(false);
       }
     };
 
     loadData();
-  }, []);
+  }, [router]);
 
   return (
     <AppContext.Provider
