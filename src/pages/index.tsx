@@ -3,8 +3,33 @@ import { Typography, Box } from "@mui/material";
 import Link from "next/link";
 import CenteredLayout from "@/components/layout/CenteredLayout";
 import Button from "@/components/common/Button";
+import { useAppContext } from "@/context/AppContext";
 
 export default function WelcomePage() {
+  const { products, loading, error } = useAppContext();
+
+  if (loading) {
+    return (
+      <CenteredLayout>
+        <Typography>Carregando dados...</Typography>
+      </CenteredLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <CenteredLayout>
+        <Typography>Error: {error}</Typography>
+      </CenteredLayout>
+    );
+  }
+
+  const activeProduct = products.find((product) => product.status === "ACTIVE");
+
+  if (!activeProduct) {
+    return <Typography>No active product found.</Typography>;
+  }
+
   return (
     <CenteredLayout>
       <Box
@@ -19,7 +44,7 @@ export default function WelcomePage() {
       >
         <Box
           component="img"
-          src="/lobby-logo.png"
+          src={activeProduct.logo_url}
           alt="Logo Lobby"
           sx={{
             width: "189px",

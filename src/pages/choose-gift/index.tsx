@@ -1,25 +1,61 @@
-import React, { useState } from "react";
-import { Box, Grid } from "@mui/material";
+import React, { useEffect } from "react";
+import { Box, Grid, Typography } from "@mui/material";
 import Link from "next/link";
 import Button from "@/components/common/Button";
 import CardItem from "@/components/common/CardItem";
 import CenteredLayout from "@/components/layout/CenteredLayout";
-
-const gifts = [
-  { id: 1, name: "Presente 1", image: "https://cdn.awsli.com.br/600x450/1398/1398809/produto/111209958/553b2a55bc.jpg" },
-  { id: 2, name: "Presente 2", image: "https://cdn.awsli.com.br/600x450/1398/1398809/produto/111209958/553b2a55bc.jpg" },
-  { id: 3, name: "Presente 3", image: "https://cdn.awsli.com.br/600x450/1398/1398809/produto/111209958/553b2a55bc.jpg" },
-  { id: 4, name: "Presente 4", image: "https://cdn.awsli.com.br/600x450/1398/1398809/produto/111209958/553b2a55bc.jpg" },
-  { id: 5, name: "Presente 5", image: "https://cdn.awsli.com.br/600x450/1398/1398809/produto/111209958/553b2a55bc.jpg" },
-  { id: 6, name: "Presente 6", image: "https://cdn.awsli.com.br/600x450/1398/1398809/produto/111209958/553b2a55bc.jpg" },
-];
+import { useAppContext } from "@/context/AppContext";
 
 export default function ChooseGiftPage() {
-  const [selectedGift, setSelectedGift] = useState<number | null>(null);
+  const { products, loading, error, selectedItems, setSelectedItems } = useAppContext();
 
-  const handleSelect = (id: number) => {
-    setSelectedGift(id);
+  useEffect(() => {
+    const hasOptionalItems = products.some((product) =>
+      product.items.some((item) => item.optional && product.status === "ACTIVE")
+    );
+
+    if (!hasOptionalItems) {
+      window.location.href = "/redemption-data";
+    }
+  }, [products]);
+
+  const handleSelect = (id: string) => {
+    setSelectedItems(
+      selectedItems.includes(id)
+        ? selectedItems.filter((item: string) => item !== id)
+        : [...selectedItems, id]
+    );
   };
+
+  if (loading) {
+    return (
+      <CenteredLayout title="Escolha o seu presente! 🎁">
+        <Typography>Carregando...</Typography>
+      </CenteredLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <CenteredLayout title="Escolha o seu presente! 🎁">
+        <Typography>Erro: {error}</Typography>
+      </CenteredLayout>
+    );
+  }
+
+  const activeOptionalItems = products
+    .filter((product) => product.status === "ACTIVE")
+    .flatMap((product) =>
+      product.items.filter((item) => item.optional)
+    );
+
+  if (activeOptionalItems.length === 0) {
+    return (
+      <CenteredLayout title="Escolha o seu presente! 🎁">
+        <Typography>Nenhum item opcional ativo encontrado.</Typography>
+      </CenteredLayout>
+    );
+  }
 
   return (
     <CenteredLayout title="Escolha o seu presente! 🎁">
@@ -33,13 +69,13 @@ export default function ChooseGiftPage() {
         }}
       >
         <Grid container spacing={2} justifyContent="center" mt={4} mb={6}>
-          {gifts.map((gift) => (
-            <Grid item xs={12} sm={6} md={4} key={gift.id}>
+          {activeOptionalItems.map((item) => (
+            <Grid item xs={12} sm={6} md={4} key={item.customer_product_id}>
               <CardItem
-                image={gift.image}
-                name={gift.name}
-                selected={selectedGift === gift.id}
-                onSelect={() => handleSelect(gift.id)}
+                image={item.image_url}
+                name={item.name}
+                selected={selectedItems.includes(item.customer_product_id)}
+                onSelect={() => handleSelect(item.customer_product_id)}
               />
             </Grid>
           ))}
@@ -51,7 +87,6 @@ export default function ChooseGiftPage() {
             justifyContent: "space-between",
             width: "100%",
             marginBottom: "24px",
-
           }}
         >
           <Link href="/" passHref>
@@ -59,7 +94,7 @@ export default function ChooseGiftPage() {
           </Link>
 
           <Link href="/redemption-data" passHref>
-            <Button variant="primary">
+            <Button variant="primary" disabled={selectedItems.length === 0}>
               Continuar
             </Button>
           </Link>
