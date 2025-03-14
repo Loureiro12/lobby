@@ -1,4 +1,5 @@
 import { FormData, Product } from "@/types/types";
+import { getAuthHeader } from "./api";
 
 interface RedeemRequestData {
   redeemer_name: string;
@@ -74,8 +75,7 @@ export const redeemProduct = async (
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Basic ${process.env.NEXT_PUBLIC_API_TOKEN}`,
+        ...getAuthHeader(),
       },
       body: JSON.stringify(requestData),
     }

@@ -1,3 +1,5 @@
+import { getAuthHeader } from "./api";
+
 export const fetchProducts = async () => {
   try {
     const response = await fetch(
@@ -5,8 +7,7 @@ export const fetchProducts = async () => {
       {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Basic ${process.env.NEXT_PUBLIC_API_TOKEN}`,
+          ...getAuthHeader(),
         },
       }
     );
